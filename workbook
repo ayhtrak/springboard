@@ -15,20 +15,6 @@ df=pd.read_csv('athlete_events.csv')
 print(df.Medal.value_counts()) #check file loading is successful 
 
 
-df[df['Sex']=='M']['Age'].quantile(0.5) # find the sex based avg
-
-top_countries=list(winners['NOC'].value_counts().index) 
-top10=df[df['NOC'].isin(top_countries[0:10])] 
-
-sns.boxplot(x='Age',y='Sex',data=top10_noc)    # plot 'age' distribution based on 'sex' for the top winning countries
-
-
-df['Medal']=df['Medal'].fillna('None')  
-sns.boxplot(x='Age',y='Sex',data=df,hue='Medal')    # add hue based on 'medal' won
-
-df_year=df[['Sex','Year','Age']].groupby(['Sex','Year'],as_index=False).mean()    # check the mean age trend by 'year' 
-
-
 
 winners=df[df.Medal.notnull()]  
 
@@ -44,6 +30,24 @@ winners[(winners['Medal']=='Gold') & (winners['Sport']=='Athletics')].Event.valu
 
 
 
+
+df[df['Sex']=='M']['Age'].quantile(0.5) # find the sex based avg
+
+top_countries=list(winners['NOC'].value_counts().index) 
+top10_noc=df[df['NOC'].isin(top_countries[0:10])] 
+
+sns.boxplot(x='Age',y='Sex',data=top10_noc)    # plot 'age' distribution based on 'sex' for the top winning countries
+
+
+df['Medal']=df['Medal'].fillna('None')  
+sns.boxplot(x='Age',y='Sex',data=df,hue='Medal')    # add hue based on 'medal' won
+
+df_year=df[['Sex','Year','Age']].groupby(['Sex','Year'],as_index=False).mean()    # check the mean age trend by 'year' 
+
+
+
+
+
 group=winners.groupby(['Name','Medal'])  
 
 medal_count=group['ID'].count().sort_values(ascending=False)    #most medals won  
@@ -55,4 +59,3 @@ medal_count=medal_count.reset_index()    #can't we group on index ?
 medal_count=pd.DataFrame(medal_count) 
 
 medal_count.iloc[medal_count.groupby('Medal')['ID'].idxmax()] 
-
