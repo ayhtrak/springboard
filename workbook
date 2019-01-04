@@ -1,0 +1,44 @@
+#script to analyze the data set
+
+import pandas as pd 
+
+import numpy as np  
+
+import matplotlib.pyplot as plt 
+
+import seaborn as sns 
+
+  
+
+df=pd.read_csv('athlete_events.csv') 
+
+print(df.Medal.value_counts()) #check file loading is successful 
+
+
+
+winners=df[df.Medal.notnull()]  
+
+winners.Age.hist(bins=40)    #winning age distribution 
+
+winners.Name.value_counts()    #most medals by an athlete 
+
+winners[winners['Medal']=='Gold'].NOC.value_counts()    #rank by country 
+
+winners[winners['Medal']=='Gold'].Sport.value_counts()     #most medals in a sport 
+
+winners[(winners['Medal']=='Gold') & (winners['Sport']=='Athletics')].Event.value_counts()    #Athletics 
+
+
+
+group=winners.groupby(['Name','Medal'])  
+
+medal_count=group['ID'].count().sort_values(ascending=False)    #most medals won  
+
+medal_count.column='Count'    #doesn’t work on series? 
+
+medal_count=medal_count.reset_index()    #can't we group on index ? 
+
+medal_count=pd.DataFrame(medal_count) 
+
+medal_count.iloc[medal_count.groupby('Medal')['ID'].idxmax()] 
+
